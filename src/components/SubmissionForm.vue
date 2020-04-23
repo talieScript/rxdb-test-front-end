@@ -106,7 +106,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      id: '',
+      id: "",
       vesselName: "",
       vesselImo: 0,
       date: "",
@@ -114,7 +114,7 @@ export default Vue.extend({
       fuels: {
         LGO: 0,
         IFO: 0,
-        MGO: 0,
+        MGO: 0
       },
       totalFuel: 0,
       datePicker: false
@@ -128,7 +128,7 @@ export default Vue.extend({
       return calculatedFuel == this.totalFuel;
     },
     offsets(): number[] {
-      const offsets = [];
+      const offsets = [] as any[];
       for (let i = -12; i < 13; i++) {
         offsets.push(i);
       }
@@ -136,36 +136,36 @@ export default Vue.extend({
     },
     structuredSubmission(): Submission {
       return {
-        id: this.id,
-        vesselName: this.vesselName,
-        vesselImo: this.vesselImo,
+        id: (this as any).id,
+        vesselName: (this as any).vesselName,
+        vesselImo: (this as any).vesselImo,
         dateOffset: {
-          date: this.date,
-          offset: this.offset
+          date: (this as any).date,
+          offset: (this as any).offset
         },
-        fuels: this.numberFuels,
-        totalFuel: Number(this.totalFuel),
+        fuels: (this as any).numberFuels,
+        totalFuel: Number((this as any).totalFuel)
       };
     },
-    numberFuels() {
+    numberFuels(): any {
       return {
-        LGO: Number(this.fuels.LGO),
-        IFO: Number(this.fuels.IFO),
-        MGO: Number(this.fuels.MGO),
-      }
+        LGO: Number((this as any).fuels.LGO),
+        IFO: Number((this as any).fuels.IFO),
+        MGO: Number((this as any).fuels.MGO)
+      };
     }
   },
   watch: {
     active: {
       immediate: true,
       handler(submission): void {
-        this.id = submission.id;
-        this.vesselName = submission.vesselName;
-        this.vesselImo = submission.vesselImo;
-        this.date = submission.dateOffset.date.substr(0, 10);
-        this.offset = submission.dateOffset.offset;
-        this.fuels = submission.fuels;
-        this.totalFuel = submission.totalFuel;
+        (this as any).id = submission.id;
+        (this as any).vesselName = submission.vesselName;
+        (this as any).vesselImo = submission.vesselImo;
+        (this as any).date = submission.dateOffset.date.substr(0, 10);
+        (this as any).offset = submission.dateOffset.offset;
+        (this as any).fuels = submission.fuels;
+        (this as any).totalFuel = submission.totalFuel;
       }
     }
   },

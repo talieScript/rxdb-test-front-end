@@ -2,11 +2,22 @@
   <v-list class="pa-1">
     <v-subheader>Submissions</v-subheader>
     <v-list-item-group v-model="item" color="primary">
-      <v-list-item class="d-flex justify-space-between"  v-for="submission in submissions" :key="submission.id">
+      <v-list-item
+        class="d-flex justify-space-between"
+        v-for="submission in submissions"
+        :key="submission.id"
+      >
         <v-list-item-content @click="changeSubmssion(submission.id)">
           <span>{{ submission.id }}</span>
         </v-list-item-content>
-        <v-btn @click="$emit('deleteSubmission', submission)" color="error" fab x-small icon dark>
+        <v-btn
+          @click="$emit('deleteSubmission', submission)"
+          color="error"
+          fab
+          x-small
+          icon
+          dark
+        >
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-list-item>
@@ -21,7 +32,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { getDb } from "./services/Database.service";
 
 export default Vue.extend({
   name: "SubmissionsList",
@@ -29,7 +39,7 @@ export default Vue.extend({
     submissions: {
       type: Array,
       required: true
-    },
+    }
   },
   data() {
     return {
@@ -38,15 +48,15 @@ export default Vue.extend({
   },
   computed: {
     jsonSubmissions() {
-      return this.submissions.map(submission => {
+      return this.submissions.map((submission: any) => {
         return submission.toJSON();
-      })
+      });
     }
   },
   methods: {
     changeSubmssion(id: number) {
       this.$emit("changeSubmission", id);
-    },
+    }
   }
 });
 </script>

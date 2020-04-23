@@ -68,9 +68,9 @@
 import Vue from "vue";
 import SubmissionsList from "./components/SubmissionsList.vue";
 import SubmssionForm from "./components/SubmissionForm.vue";
-import { getDb } from "./services/Database.service";
+import { getDb } from "./services/Database.service.js";
 // import { submissionSchema } from "./submission.schema.ts";
-import emptySubmssion from "./dummyData/emptySubmission";
+import emptySubmssion from "./dummyData/emptySubmission.js";
 
 export interface Submission {
   id: string;
@@ -100,11 +100,11 @@ export default Vue.extend({
   data() {
     return {
       menu: true,
-      submissions: [],
-      activeSubmission: {},
-      db: {},
+      submissions: [] as any[],
+      activeSubmission: {} as any,
+      db: {} as any,
       updateWarning: true,
-      state: {},
+      state: {} as any,
       dialog: false,
       deletedDialog: false,
       preventDialog: false,
@@ -112,7 +112,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    async deleteSubmission(submission) {
+    async deleteSubmission(submission: any) {
       if (submission.id === this.activeSubmission.id) {
         this.preventDialog = true;
         if (this.submissions.length > 1) {
@@ -143,20 +143,20 @@ export default Vue.extend({
       }
       this.dialog = false;
     },
-    setActiveSubmission(value) {
+    setActiveSubmission(value: any) {
       this.activeSubmission = value;
     },
     changeActiveSubmission(id: string) {
       const submission = this.submissions.find(submission => {
         return submission.id == id;
-      }) as Submission;
+      }) as any;
       this.activeSubmission = submission.toJSON();
     },
     /**
      * submit function here
      */
-    async submit(submission) {
-      this.prentDialog = true;
+    async submit(submission: any) {
+      this.preventDialog = true;
       await this.db.submission.upsert({
         id: submission.id,
         vesselName: submission.vesselName,
@@ -169,18 +169,18 @@ export default Vue.extend({
     }
   },
   async mounted() {
-    getDb().then(async db => {
+    getDb().then(async (db: any) => {
       this.db = db;
       this.state = db.submission.sync({
         remote: "http://localhost:3000/db/submissions"
       });
-      this.state.docs$.subscribe(docData => console.dir("docData"));
+      this.state.docs$.subscribe((docData: any) => console.dir("docData"));
 
       this.submissions = await db.submission.find().exec();
       if (this.submissions.length) {
         this.activeSubmission = this.submissions[0].toJSON();
       }
-      db.submission.update$.subscribe(async event => {
+      db.submission.update$.subscribe(async (event: any) => {
         const updatedId = event.data.doc;
         const index = this.submissions.findIndex(submission => {
           return submission.id == updatedId;
@@ -191,13 +191,16 @@ export default Vue.extend({
           .eq(updatedId)
           .exec();
         this.submissions.splice(index, 1, submission);
-        if (updatedId === this.activeSubmission.id && !this.prentDialog) {
+        if (
+          updatedId === this.activeSubmission.id &&
+          !(this as any).prentDialog
+        ) {
           this.dialogText = "This submission has been updated by another user";
           this.dialog = true;
         }
-        this.prentDialog = false;
+        (this as any).prentDialog = false;
       });
-      db.submission.$.subscribe(async event => {
+      db.submission.$.subscribe(async (event: any) => {
         this.submissions = await db.submission.find().exec();
         // Handle active submission removed
         if (
