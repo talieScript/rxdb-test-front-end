@@ -60,6 +60,22 @@
       <p v-else class="text-center text--secondary">
         Select or create a submission.
       </p>
+      <v-list>
+        <v-subheader>Changes</v-subheader>
+        <v-list-item
+          v-for="(change, index) in changes[this.activeSubmission.id]"
+          :key="index"
+        >
+          <v-icon>mdi-clock</v-icon>
+          <v-chip
+            class="ma-2"
+            v-for="(changeItem, index) in change"
+            :key="index"
+          >
+            {{ index }} was {{ changeItem }}
+          </v-chip>
+        </v-list-item>
+      </v-list>
     </v-content>
   </v-app>
 </template>
@@ -72,6 +88,7 @@ import { getDb } from "./services/Database.service.js";
 // import { submissionSchema } from "./submission.schema.ts";
 import emptySubmssion from "./dummyData/emptySubmission.js";
 import { v4 as uuid } from "uuid";
+import diff from "object-diff";
 
 export interface Submission {
   id: string;
@@ -109,8 +126,54 @@ export default Vue.extend({
       dialog: false,
       deletedDialog: false,
       preventDialog: false,
-      dialogText: ""
+      dialogText: "",
+      changes: {}
     };
+  },
+  computed: {
+    activeSubmissionDocument() {
+      const activeDocument = this.submissions.find(
+        submission => submission.id === this.activeSubmission.id
+      );
+      console.log(activeDocument);
+      return activeDocument.$.subscribe(change => console.log(change));
+    }
+  },
+
+  watch: {
+    activeSubmission(val, oldVal) {
+      const activeDocument = this.submissions.find(
+        submission => submission.id === this.activeSubmission.id
+      );
+      activeDocument.$.subscribe(change => {
+        const { id, vesselImo, vesselName, totalFuel } = this.activeSubmission;
+        const diffs = diff(
+          { id, vesselImo, vesselName, totalFuel },
+          {
+            id: change.id,
+            vesselImo: change.vesselImo,
+            vesselName: change.vesselName,
+            totalFuel: change.totalFuel
+          }
+        );
+        const dateDiff = diff(
+          this.activeSubmission.dateOffset,
+          change.dateOffset
+        );
+        const fuelDiff = diff(this.activeSubmission.fuels, change.fuels);
+        const allDiffs = { ...diffs, ...dateDiff, ...fuelDiff };
+        console.log(Object.keys(allDiffs).length);
+        if (Object.keys(allDiffs).length) {
+          console.log(change.id);
+          this.changes[change.id] = this.changes[change.id]
+            ? [...this.changes[change.id], allDiffs]
+            : [allDiffs];
+          this.activeSubmission = change;
+        } else {
+          console.log("no change");
+        }
+      });
+    }
   },
   methods: {
     async deleteSubmission(submission: any) {
