@@ -18,7 +18,7 @@ export async function getDb() {
   });
 
   const state = db.submission.sync({
-    remote: "http://localhost:3000/db/submissions"
+    remote: "https://rxdb-test-backend.herokuapp.com/db/submissions"
   });
 
   state.docs$.subscribe(docData => console.dir(docData));
