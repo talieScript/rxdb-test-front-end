@@ -4,11 +4,13 @@
     <v-list-item-group v-model="item" color="primary">
       <v-list-item
         class="d-flex justify-space-between"
-        v-for="submission in submissions"
+        v-for="(submission, index) in submissions"
         :key="submission.id"
       >
         <v-list-item-content @click="changeSubmssion(submission.id)">
-          <span>{{ submission.id }}</span>
+          <span>{{
+            submission.vesselName.length ? submission.vesselName : index + 1
+          }}</span>
         </v-list-item-content>
         <v-btn
           @click="$emit('deleteSubmission', submission)"

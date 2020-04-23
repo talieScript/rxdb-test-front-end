@@ -71,6 +71,7 @@ import SubmssionForm from "./components/SubmissionForm.vue";
 import { getDb } from "./services/Database.service.js";
 // import { submissionSchema } from "./submission.schema.ts";
 import emptySubmssion from "./dummyData/emptySubmission.js";
+import { v4 as uuid } from "uuid";
 
 export interface Submission {
   id: string;
@@ -126,7 +127,7 @@ export default Vue.extend({
     async addSubmission() {
       const newSubmission = await this.db.submission.insert({
         ...emptySubmssion,
-        id: (this.submissions.length + 1).toString()
+        id: uuid().toString()
       });
       this.activeSubmission = newSubmission;
     },
