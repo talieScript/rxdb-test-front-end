@@ -172,7 +172,7 @@ export default Vue.extend({
     getDb().then(async (db: any) => {
       this.db = db;
       this.state = db.submission.sync({
-        remote: "http://localhost:3000/db/submissions"
+        remote: "https://rxdb-test-backend.herokuapp.com/db/submissions"
       });
       this.state.docs$.subscribe((docData: any) => console.dir("docData"));
 
