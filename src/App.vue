@@ -257,12 +257,13 @@ export default Vue.extend({
         this.submissions.splice(index, 1, submission);
         if (
           updatedId === this.activeSubmission.id &&
-          !(this as any).prentDialog
+          !(this as any).preventDialog
         ) {
+          console.log("here");
           this.dialogText = "This submission has been updated by another user";
           this.dialog = true;
         }
-        (this as any).prentDialog = false;
+        (this as any).preventDialog = false;
       });
       db.submission.$.subscribe(async (event: any) => {
         this.submissions = await db.submission.find().exec();
