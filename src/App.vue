@@ -132,7 +132,7 @@ export default Vue.extend({
   },
   computed: {
     activeSubmissionDocument() {
-      const activeDocument = this.submissions.find(
+      const activeDocument = (this as any).submissions.find(
         submission => submission.id === this.activeSubmission.id
       );
       console.log(activeDocument);
